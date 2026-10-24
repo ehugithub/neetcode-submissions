@@ -1,26 +1,32 @@
 class Solution:
 
     def encode(self, strs: List[str]) -> str:
+        # len + # + (string)
         res = ""
 
-        for string in strs:
-            l = len(string)
-            res += str(l) + '#' + string
+        for s in strs:
+            l = len(s)
+            res += str(l) + '#' + s
         return res
+
     def decode(self, s: str) -> List[str]:
         res = []
+
         i = 0
-
         while i < len(s):
-            num = ""
-            while s[i].isnumeric():
-                num += s[i]
-                i += 1
-            num = int(num)
-
+            j = i
+            while s[j].isnumeric():
+                j += 1
+            
+            length = int(s[i : j])
+            
             # skip hashtag
-            i += 1
+            j += 1
 
-            res.append(s[i : i + num])
-            i += num
+            res.append(s[j : j + length])
+
+            i = j + length
+        
         return res
+
+
