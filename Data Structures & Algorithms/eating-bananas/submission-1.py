@@ -1,30 +1,24 @@
 class Solution:
-    def minEatingSpeed(self, piles: list[int], h: int) -> int:
-        # 1 <= k <= n
-        # binary search over the sample space?
-        isFeasible = False
-        k = max(piles)
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        # solution space: k\in [1, max(piles)]
+        # we can binary search this space to find the opt answer
+        left, right = 1, max(piles)
 
-        left = 0
-        right = max(piles)
-
-        def isFeasible(num):
-            if num == 0: return False
-            res = 0
+        def canEat(k):
+            time = 0
             for pile in piles:
-                res += math.ceil(pile / num)
-            return res <= h 
+                time += -(-pile // k)
+            return time <= h
+        print(canEat(1))
 
-        mid = 0
-
-        while left < right:
+        while left <= right:
             mid = left + (right - left) // 2
-            # check if mid is feasible
-            if isFeasible(mid):
-                right = mid
+            if canEat(mid):
+                if not canEat(mid + 1):
+                    return mid
+                right = mid - 1
             else:
                 left = mid + 1
-        return left
-
-
+        
+        return mid if canEat(mid) else mid + 1
         
