@@ -9,22 +9,25 @@ class Node:
 
 class Solution:
     def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
+        if not head: return head
+        dummy = Node(x = 0)
+        new_ptr = dummy
+        ptr = head
 
-        if not head: return None
+        # maps each node to its clone
+        d = defaultdict(Node)
 
-        # maps old Nodes to new Nodes
-        # Node -> Node
-        d = {}
-        node = head
-        while node:
-            d[node] = Node(node.val)
-            node = node.next
-        # match pointers
-        node = head
-        while node:
-            d[node].next = d.get(node.next, None)
-            d[node].random = d.get(node.random, None)
-            node = node.next
+        while ptr:
+            tmp = Node(x = ptr.val)
+            new_ptr.next = tmp
+            d[ptr] = tmp 
 
-        return d[head]
+            ptr = ptr.next
+            new_ptr = new_ptr.next
         
+        ptr = head
+        while ptr:
+            d[ptr].random = d[ptr.random] if ptr.random else ptr.random
+            ptr = ptr.next
+
+        return dummy.next
