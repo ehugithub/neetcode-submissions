@@ -3,35 +3,41 @@
 #     def __init__(self, val=0, next=None):
 #         self.val = val
 #         self.next = next
+
 class Solution:
-    def reverseKGroup(self, head: ListNode | None, k: int) -> ListNode | None:
-        if not head or not head.next or not k:
-            return head
-
-        # need the length
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
         length = 0
-        nde = head
-        while nde:
+
+
+        ptr = head
+        while ptr:
+            ptr = ptr.next
             length += 1
-            nde = nde.next
-        iterations = length // k
 
-        dummy = ListNode()
-        prev = dummy
+        n = length // k
+        dummy = ListNode(next = head)
+        ptr = dummy
         curr = head
-
-        for _ in range(iterations):
-            prevTail = prev
-            # current head of the segment becomes the tail, and vice versa
-            currHead = curr
+        
+        for _ in range(n):
+            prevStart = ptr
             for _ in range(k):
-                tmp = curr
-                curr = curr.next
-                tmp.next = prev
-                prev = tmp
-            currTail = prev
-            prevTail.next = currTail
-            currHead.next = curr
-            prev = currHead
+                tmp = curr.next
+                curr.next = ptr
+                ptr = curr
+                curr = tmp
+            # dummy <-> 1 <- 2 <-  3    4 -> ...
+            #                     ptr  curr
 
-        return dummy.next 
+            prevStart.next.next = curr
+            tmp = prevStart.next
+            prevStart.next = ptr
+            ptr = tmp
+
+            # dummy -> 3 -> 2 -> 1 -> 4 -> ...
+            #          ptr            curr
+
+        return dummy.next
+
+        
+        
