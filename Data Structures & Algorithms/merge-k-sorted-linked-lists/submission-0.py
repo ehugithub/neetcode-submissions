@@ -3,23 +3,27 @@
 #     def __init__(self, val=0, next=None):
 #         self.val = val
 #         self.next = next
-class Solution:
+
+class Solution:    
     def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
-        # min heap storing (root.val, root)
-        heap = [(root.val, i, root) for i, root in enumerate(lists) if root]
+        # maintain a min heap as we process through each sorted list
+        # need another identifier (i.e index) so we can map each value to their linked list
+        dummy = ListNode()
+        ptr = dummy
+
+        heap = [(head.val, ind) for ind, head in enumerate(lists) if head]
         heapq.heapify(heap)
 
-        dummy = ListNode()
-        cur = dummy
-
         while heap:
-            val, i, node = heapq.heappop(heap)
+            v, i = heapq.heappop(heap)
+            tmp = ListNode(val = v)
+            ptr.next = tmp
+            ptr = tmp
 
-            cur.next = ListNode(val)
-            cur = cur.next 
-
-            if node.next:
-                heapq.heappush(heap, (node.next.val, i, node.next))
+            if lists[i].next:
+                lists[i] = lists[i].next
+                heapq.heappush(heap, (lists[i].val, i))
 
         return dummy.next
+
         
